@@ -1,0 +1,110 @@
+data_cfg:
+  dataset_name: Yearbook
+  dataset_root: /home/oliverio/escritorio/Datasets/Silhouette_Yearbook_pkl
+  dataset_partition: ./datasets/Yearbook/Yearbook.json
+  num_workers: 1
+  remove_no_gallery: false
+  test_dataset_name: Yearbook
+
+evaluator_cfg:
+  enable_float16: true
+  restore_ckpt_strict: true
+  restore_hint: 180000
+  save_name: GaitBase
+  eval_func: evaluate_Yearbook
+  sampler:
+    batch_shuffle: false
+    batch_size: 1
+    sample_type: all_ordered
+    frames_all_limit: 720
+  metric: euc
+  transform:
+    - type: BaseSilCuttingTransform
+
+loss_cfg:
+  - loss_term_weight: 1.0
+    margin: 0.2
+    type: TripletLoss
+    log_prefix: triplet
+  - loss_term_weight: 1.0
+    scale: 16
+    type: CrossEntropyLoss
+    log_prefix: softmax
+    log_accuracy: true
+
+model_cfg:
+  model: Baseline
+  backbone_cfg:
+    type: ResNet9
+    block: BasicBlock
+    channels:
+      - 64
+      - 128
+      - 256
+      - 512
+    layers:
+      - 1
+      - 1
+      - 1
+      - 1
+    strides:
+      - 1
+      - 2
+      - 2
+      - 1
+    maxpool: false
+  SeparateFCs:
+    in_channels: 512
+    out_channels: 256
+    parts_num: 16
+  SeparateBNNecks:
+    class_num: 461
+    in_channels: 256
+    parts_num: 16
+  bin_num:
+    - 16
+
+optimizer_cfg:
+  lr: 0.1
+  momentum: 0.9
+  solver: SGD
+  weight_decay: 0.0005
+
+scheduler_cfg:
+  gamma: 0.1
+  milestones:
+    - 80000
+    - 120000
+    - 150000
+  scheduler: MultiStepLR
+trainer_cfg:
+  enable_float16: true
+  fix_BN: false
+  with_test: false
+  log_iter: 100
+  restore_ckpt_strict: true
+  restore_hint: 0
+  save_iter: 10000
+  save_name: GaitBase
+  sync_BN: true
+  total_iter: 180000
+  sampler:
+    batch_shuffle: true
+    batch_size:
+      - 32
+      - 4
+    frames_num_fixed: 30
+    frames_num_max: 40
+    frames_num_min: 20
+    sample_type: unfixed_unordered
+    type: TripletSampler
+  transform:
+    - type: Compose
+      trf_cfg:
+        - type: RandomPerspective
+          prob: 0.2
+        - type: BaseSilCuttingTransform
+        - type: RandomHorizontalFlip
+          prob: 0.2
+        - type: RandomRotate
+          prob: 0.2

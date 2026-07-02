@@ -4,7 +4,7 @@ This repository provides access instructions for the Yearbook dataset, along wit
 
 ## Overview
 
-The Yearbook dataset consists of short video sequences of a few seconds in duration, recorded during four editions of a running event held in four different years. For each year, recordings were captured at three different locations along the race route.
+The Yearbook dataset consists of short video sequences of a few seconds in duration, acquired during four editions of a running event held in four different years. For each year, recordings were captured at three different locations along the race route.
 
 These video sequences show silhouettes of the individuals, represented in white over a black background.
 
@@ -16,7 +16,7 @@ Each video sequence is identified by a numeric code with the format `nnn_a_b` wh
 
 * `nnn`: is a unique identifier for each individual (values from `000` to `999`)
 * `a`: is the yearly race edition (values from `1` to `4`)
-* `b`: is the recording point within the corresponding edition (values from `1` to `3`)
+* `b`: is the acquisition location within the corresponding edition (values from `1` to `3`)
 
 ## Access and Usage Restrictions
 
